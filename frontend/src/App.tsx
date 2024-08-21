@@ -143,7 +143,10 @@ function MenuItemPage({ id }: { id: number }) {
       <h1>{menuItem.name}</h1>
       {/* You can add more details here */}
       <p>This is the detail page for {menuItem.name}.</p>
-      <img src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg" />
+      <img
+        src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg"
+        style={{ width: "200px", height: "200px" }}
+      />
       <h1>Upload Image to S3</h1>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload</button>
@@ -167,7 +170,11 @@ function MenuItemPage({ id }: { id: number }) {
       {retrievedImage && (
         <span>
           <h3>Retrieved Image:</h3>
-          <img src={retrievedImage} alt="Retrieved" />
+          <img
+            src={retrievedImage}
+            alt="Retrieved"
+            style={{ width: "200px", height: "200px" }}
+          />
         </span>
       )}
     </div>

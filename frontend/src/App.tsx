@@ -176,7 +176,7 @@ function MenuItemPage({ id }: { id: number }) {
 
 function DiningHallMenu() {
   return (
-    <div>
+    <div className="container">
       {data.map((group, i) => (
         <div key={i}>
           <h2>{group.diningHallGroup}</h2>

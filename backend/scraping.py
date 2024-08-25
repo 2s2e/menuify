@@ -24,7 +24,7 @@ dininghall_id = ['64','18','24','15','11','05','01','37','27','21','32']
 # Navigate to the URL
 driver.get(f'https://hdh-web.ucsd.edu/dining/apps/diningservices/Restaurants/MenuItem/{dininghall_id[2]}')
 # select = Select(driver.find_element(By.ID, 'mySelect'))
-# select.select_by_visible_text('Breakfast')
+# select.select_by_visible_text('Dinner')
 
 parent_element = driver.find_element(By.ID, 'menuContainer')
 
@@ -46,8 +46,8 @@ for index, div in enumerate(divs, start=1):
 
 
 for i, (a,b) in enumerate(zip(category,inline_item), start=2):
-    default_sheet[f'A{i}'] = a
-    default_sheet[f'B{i}'] = b
+    default_sheet[f'E{i}'] = a
+    default_sheet[f'F{i}'] = b
 
 
 # driver.get('https://hdh-web.ucsd.edu/dining/apps/diningservices/Restaurants/MenuItem/24')

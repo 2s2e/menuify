@@ -10,12 +10,15 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const crypto = require("crypto");
 const path = require("path");
 const cors = require("cors");
+const Menus = require('./models/Menus')
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Initialize Express app
 const app = express();
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cors()); // Enable CORS for all routes
 
@@ -81,6 +84,54 @@ app.get("/image/:key", async (req, res) => {
     res.status(500).send("Failed to generate signed URL");
   }
 });
+
+
+app.post("/api/post", (req,res) => {
+  const {group, restaurant, category, subcategory, item, image} = req.body
+  Menus.create( {group, restaurant, category, subcategory, item, image}).then(
+    result => {
+      // console.log(result)
+      res.status(200).json({success:true,message:'Posted'})
+    }
+  ).catch(
+    err => {
+      // console.log(err)
+      res.status(400).json({sucess:false,message:'Failed to post'})
+    }
+  )
+})
+
+
+app.get("/api/getItem/:name", (req,res) => {
+  const {name} = req.params
+  Menus.findOne({item: name})
+  .then( result => {
+    // console.log(result)
+    res.status(200).json({success:true,item: result})
+  })
+  .catch( err => {
+    console.log(err)
+    res.status(400).json({sucess:false,message:'Failed to fetch item'})
+  })
+})
+
+
+app.get("/api/getAllItems", (req,res) => {
+  Menus.find()
+  .then( result => {
+      // console.log(result.length)
+      res.status(200).json({success:true, items: result})
+    }
+  ).catch( err => {
+    res.status(400).json({success:false, message: 'Failed to get all items'})
+  })
+})
+
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGODB_URI).then(() => {
+    console.log("Connected to MongoDB database!")
+})
 
 // Start the server
 const port = process.env.PORT || 3000;

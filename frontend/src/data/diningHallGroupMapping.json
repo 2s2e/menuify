@@ -1,0 +1,25 @@
+{
+    "64": 
+    [
+        {"id": "1", "name": "Umi"},
+        {"id": "2", "name": "Market 64"},
+        {"id": "3", "name": "Triton Grill"},
+        {"id": "4", "name": "Al Dente"},
+        {"id": "5", "name": "Wok"}
+    ],
+    "18": 
+    [
+        {"id": "1", "name": "Soul"},
+        {"id": "2", "name": "Vibe"},
+        {"id": "3", "name": "Journey"},
+        {"id": "4", "name": "Tandoor"},
+        {"id": "5", "name": "Handpies"}
+    ],   
+    "24" : 
+    [
+        {"id": "1", "name": "Fusion Grill"},
+        {"id": "2", "name": "360"},
+        {"id": "3", "name": "Earl's Coffeehouse"},
+        {"id": "4", "name": "Fresh"}
+    ]
+}

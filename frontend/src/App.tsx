@@ -8,6 +8,8 @@ import {
   useParams,
 } from "react-router-dom";
 
+import Form from './components/Form'
+
 // Dummy data
 const data = [
   {
@@ -294,30 +296,36 @@ function MenuItemPage({ id }: { id: number }) {
 
 function DiningHallMenu() {
   return (
+
     <div className="container">
-      {data.map((group, i) => (
-        <div key={i}>
-          <h2>{group.diningHallGroup}</h2>
-          {group.diningHalls.map((hall, j) => (
-            <div key={j} style={{ marginLeft: "20px" }}>
-              <h3>{hall.name}</h3>
-              {hall.menuGroups.map((menuGroup, k) => (
-                <div key={k} style={{ marginLeft: "40px" }}>
-                  <h4>{menuGroup.name}</h4>
-                  <ul>
-                    {menuGroup.menuItems.map((item, l) => (
-                      <li key={l}>
-                        <Link to={`/menu-item/${item.id}`}>{item.name}</Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      ))}
+
+      <Form />
     </div>
+
+    // <div className="container">
+    //   {data.map((group, i) => (
+    //     <div key={i}>
+    //       <h2>{group.diningHallGroup}</h2>
+    //       {group.diningHalls.map((hall, j) => (
+    //         <div key={j} style={{ marginLeft: "20px" }}>
+    //           <h3>{hall.name}</h3>
+    //           {hall.menuGroups.map((menuGroup, k) => (
+    //             <div key={k} style={{ marginLeft: "40px" }}>
+    //               <h4>{menuGroup.name}</h4>
+    //               <ul>
+    //                 {menuGroup.menuItems.map((item, l) => (
+    //                   <li key={l}>
+    //                     <Link to={`/menu-item/${item.id}`}>{item.name}</Link>
+    //                   </li>
+    //                 ))}
+    //               </ul>
+    //             </div>
+    //           ))}
+    //         </div>
+    //       ))}
+    //     </div>
+    //   ))}
+    // </div>
   );
 }
 // App component with routing

@@ -121,3 +121,4 @@ Thumbs.db
 
 
 backend/chromedriver-mac-arm64
+package-lock.json

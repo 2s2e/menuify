@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -69,18 +69,16 @@ const data = [
 function MenuItemPage({ id }: { id: number }) {
   const [file, setFile] = useState<File | null>(null);
   const [uploadResult, setUploadResult] = useState(null);
-  const [imageKey, setImageKey] = useState("");
-  const [retrievedImage, setRetrievedImage] = useState<string | null>(null);
+  const [myImageKey, setImageKey] = useState("");
+  //const [retrievedImage, setRetrievedImage] = useState<string | null>(null);
+  const [retrievedImages, setRetrievedImages] = useState<string[] | null>(null);
+  const [gottenImages, setGottenImages] = useState<string[] | null>(null);
   // Find the menu item by ID
   const menuItem = data
     .flatMap((group) => group.diningHalls)
     .flatMap((hall) => hall.menuGroups)
     .flatMap((group) => group.menuItems)
     .find((item) => item.id === id);
-
-  if (!menuItem) {
-    return <div>Menu Item not found</div>;
-  }
 
   // Handle file selection
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -107,36 +105,135 @@ function MenuItemPage({ id }: { id: number }) {
       });
 
       const result = await response.json();
-      setUploadResult(result.fileUrl);
-      setImageKey(result.fileUrl.split("/").pop()); // Extract the key from the URL
+      console.log(result);
+      setUploadResult(result.fileKey);
+      setImageKey(result.fileKey); // Extract the key from the URL
+
+      if (result) {
+        const response2 = await fetch(
+          `http://localhost:3000/api/addImage/${menuItem.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              image: result.fileKey,
+            }),
+          }
+        );
+        const result2 = await response2.json();
+        console.log(result2);
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
     }
   };
 
-  // Handle image retrieval
-  const handleRetrieve = async () => {
-    if (!imageKey) {
-      alert("Please enter an image key first!");
-      return;
-    }
+  const handleNewEntry = async () => {
+    //first see if the entry with proper id already exists
+    const response = await fetch(
+      `http://localhost:3000/api/getItem/${menuItem?.id}`
+    );
+    console.log(menuItem?.id);
 
+    const result = await response.json();
+    console.log("handle new entry", result);
+    if (result.item !== null) {
+      console.log("Entry already exists");
+      return;
+    } else {
+      console.log("Entry does not exist, creating new entry");
+      const response = await fetch("http://localhost:3000/api/post", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          group: "temp",
+          restaurant: "temp",
+          category: "temp",
+          subcategory: "temp",
+          item: menuItem?.name,
+          image: [],
+          id: menuItem?.id,
+        }),
+      });
+
+      const result = await response.json();
+      console.log("handle new entry", result);
+    }
+  };
+
+  // Handle image retrieval
+  const handleRetrieve = async (myImageKey: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/image/${imageKey}`);
+      const response = await fetch(`http://localhost:3000/image/${myImageKey}`);
       const data = await response.json();
 
       if (data.url) {
-        const imageResponse = await fetch(data.url, { mode: "cors" });
-        const blob = await imageResponse.blob();
-        const imageUrl = URL.createObjectURL(blob);
-        setRetrievedImage(imageUrl);
+        return data.url; // Return the image URL
       } else {
-        alert("Failed to retrieve image");
+        console.error("Failed to retrieve image URL");
+        return null;
       }
     } catch (error) {
       console.error("Error retrieving image:", error);
+      return null;
     }
   };
+
+  const handleRetrieveAll = async () => {
+    if (!menuItem) {
+      return;
+    }
+
+    // First, get the list of image keys
+    const imageKeyList = await getImageKeyList();
+
+    // Then, fetch all the images based on those keys
+    const imageListPromises = imageKeyList.map((imageKey: string) =>
+      handleRetrieve(imageKey)
+    );
+
+    // Wait for all the image URLs to be resolved
+    const imageList = await Promise.all(imageListPromises);
+
+    // Filter out any null values in case any fetch failed
+    const validImages = imageList.filter((image) => image !== null) as string[];
+
+    setGottenImages(validImages);
+  };
+
+  const getImageKeyList = async () => {
+    console.log(menuItem?.name);
+    const response = await fetch(
+      `http://localhost:3000/api/getItem/${menuItem?.name}`
+    );
+    const data = await response.json();
+    console.log("get image key list", data);
+    if (data.success) {
+      const imageKeyList = data.item.image;
+      setRetrievedImages(imageKeyList);
+      return imageKeyList;
+    } else {
+      alert("Failed to retrieve image urls");
+    }
+  };
+
+  useEffect(() => {
+    if (menuItem) {
+      handleNewEntry().then(() => {
+        handleRetrieveAll();
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!menuItem) {
+    return <div>Menu Item not found</div>;
+  }
 
   return (
     <div>
@@ -158,7 +255,7 @@ function MenuItemPage({ id }: { id: number }) {
         </div>
       )}
 
-      <h2>Retrieve Image</h2>
+      {/* <h2>Retrieve Image</h2>
       <input
         type="text"
         value={imageKey}
@@ -173,9 +270,23 @@ function MenuItemPage({ id }: { id: number }) {
           <img
             src={retrievedImage}
             alt="Retrieved"
-            style={{ width: "200px", height: "200px" }}
+            style={{ width: "200px" }}
           />
         </span>
+      )} */}
+
+      {gottenImages && (
+        <div>
+          <h2>Retrieved Images:</h2>
+          {gottenImages.map((imageKey, index) => (
+            <img
+              key={index}
+              src={imageKey}
+              alt={`Retrieved ${index}`}
+              style={{ width: "200px", margin: "10px" }}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

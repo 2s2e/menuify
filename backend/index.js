@@ -10,14 +10,14 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const crypto = require("crypto");
 const path = require("path");
 const cors = require("cors");
-const Menus = require('./models/Menus')
+const Menus = require("./models/Menus");
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Initialize Express app
 const app = express();
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors()); // Enable CORS for all routes
@@ -85,53 +85,85 @@ app.get("/image/:key", async (req, res) => {
   }
 });
 
+app.post("/api/post", (req, res) => {
+  const { group, restaurant, category, subcategory, item, image, id } =
+    req.body;
+  Menus.create({ group, restaurant, category, subcategory, item, image, id })
+    .then((result) => {
+      console.log(result);
+      res.status(200).json({ success: true, message: "Posted" });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json({ sucess: false, message: "Failed to post" });
+    });
+});
 
-app.post("/api/post", (req,res) => {
-  const {group, restaurant, category, subcategory, item, image} = req.body
-  Menus.create( {group, restaurant, category, subcategory, item, image}).then(
-    result => {
-      // console.log(result)
-      res.status(200).json({success:true,message:'Posted'})
-    }
-  ).catch(
-    err => {
-      // console.log(err)
-      res.status(400).json({sucess:false,message:'Failed to post'})
-    }
-  )
-})
+app.put("/api/addImage/:id", (req, res) => {
+  const { id } = req.params;
+  const { image } = req.body;
+  Menus.findOneAndUpdate({ id: id }, { $push: { image: image } })
+    .then((result) => {
+      console.log(result);
+      res.status(200).json({ success: true, message: "Image added" });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json({ success: false, message: "Failed to add image" });
+    });
+});
 
+app.get("/api/getItem/:name", (req, res) => {
+  const { name } = req.params;
+  console.log(name);
+  Menus.findOne({ item: name })
+    .then((result) => {
+      console.log(result);
+      res.status(200).json({ success: true, item: result });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json({ sucess: false, message: "Failed to fetch item" });
+    });
+});
 
-app.get("/api/getItem/:name", (req,res) => {
-  const {name} = req.params
-  Menus.findOne({item: name})
-  .then( result => {
-    // console.log(result)
-    res.status(200).json({success:true,item: result})
-  })
-  .catch( err => {
-    console.log(err)
-    res.status(400).json({sucess:false,message:'Failed to fetch item'})
-  })
-})
+app.get("/api/getItem/:id", (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  Menus.findOne({ id: id })
+    .then((result) => {
+      console.log(result);
+      res.status(200).json({ success: true, item: result });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json({ sucess: false, message: "Failed to fetch item" });
+    });
+});
 
-
-app.get("/api/getAllItems", (req,res) => {
+app.get("/api/getAllItems", (req, res) => {
   Menus.find()
-  .then( result => {
+    .then((result) => {
       // console.log(result.length)
-      res.status(200).json({success:true, items: result})
-    }
-  ).catch( err => {
-    res.status(400).json({success:false, message: 'Failed to get all items'})
-  })
-})
+      res.status(200).json({ success: true, items: result });
+    })
+    .catch((err) => {
+      res
+        .status(400)
+        .json({ success: false, message: "Failed to get all items" });
+    });
+});
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-mongoose.connect(process.env.MONGODB_URI).then(() => {
-    console.log("Connected to MongoDB database!")
-})
+// mongoose.connect(process.env.MONGODB_URI).then(() => {
+//     console.log("Connected to MongoDB database!")
+// })
+
+mongoose
+  .connect("mongodb://127.0.0.1:27017/menus")
+  .then(() => console.log("Connected to MongoDB database!"))
+  .catch((err) => console.error("Failed to connect to MongoDB", err));
 
 // Start the server
 const port = process.env.PORT || 3000;

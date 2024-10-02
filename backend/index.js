@@ -101,8 +101,8 @@ app.post("/api/post", (req, res) => {
 
 app.put("/api/addImage/:id", (req, res) => {
   const { id } = req.params;
-  const { image } = req.body;
-  Menus.findOneAndUpdate({ id: id }, { $push: { image: image } })
+  const { review } = req.body;
+  Menus.findOneAndUpdate({ id: id }, { $push: { reviews: review } })
     .then((result) => {
       console.log(result);
       res.status(200).json({ success: true, message: "Image added" });

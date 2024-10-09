@@ -8,8 +8,8 @@ const ReviewSchema = new mongoose.Schema({
 const Menus = new mongoose.Schema({
   group: { type: String, required: true },
   restaurant: { type: String, required: true },
-  category: { type: String, required: true },
-  subcategory: { type: String, required: true },
+  category: { type: String },
+  subcategory: { type: String },
   item: { type: String, required: true },
   reviews: { type: [ReviewSchema], required: true },
   id: { type: Number, required: true },

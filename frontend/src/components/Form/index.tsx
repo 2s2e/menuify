@@ -1,8 +1,9 @@
-import React, {useState, useEffect, useRef} from 'react';
-import classNames from "classnames";
+import React, {ChangeEvent, FormEvent, useState, useEffect, useRef} from 'react';
 import Dropdown from '../Dropdown';
-import diningHallGroupMapping from '../../data/diningHallGroupMapping'
+import diningHallGroupMapping from '../../data/diningHallGroupMapping.json'
 import './index.less';
+import axios from 'axios';
+
 
 interface DiningHall {
   id: string,
@@ -54,6 +55,29 @@ const Form: React.FC = () => {
   }
   ,[selectedDHG])
 
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault(); // Prevent page reload
+
+    // const { group, restaurant, category, subcategory, item, image, id } =
+    
+    const payload = { group: selectedDHG, restaurant: selectedDH, category: selectedMeal, item: menuItem }
+    console.log('selectedDHG: ', selectedDHG)
+    console.log('selectedDH: ', selectedDH) 
+    console.log('selectedMeal: ', selectedMeal)
+    console.log('menuItem: ', menuItem)
+    console.log('comment: ', comment)
+    console.log('imageKey: ', imageKey)
+
+    axios.post('http://localhost:3000/api/post', payload, {"Access-Control-Allow-Origin": '*'})
+    .then( res => console.log(res.data.status)
+    ).catch( err => console.log(err)  )
+
+    
+
+    
+    
+  };
+
 
 
 
@@ -91,7 +115,7 @@ const Form: React.FC = () => {
 
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
 
         <h2>Upload a Foodie Photo 📷</h2>
 
@@ -107,18 +131,22 @@ const Form: React.FC = () => {
           <br/>
 
           <label>Meal Type: </label>  
-          <Dropdown id={"3"} data={meal} />
+          <Dropdown id={"3"} data={meal}  onSelect={setMeal}/>
 
           <br/>
 
           <label>Menu Item: </label>  <br/>
-          <input type="text" className="TextInput" onChange={()=>setMenuItem()} />
+          <input type="text" className="TextInput" onChange={(e)=>setMenuItem(e.target.value)} />
 
           <br/><br/>
 
+
           <label>Photo: </label>  <br/>
-          <input type="file" onChange={handleFileChange} />
-          <button onClick={handleUpload}>Upload</button>
+
+          <div>
+            <input type="file" onChange={handleFileChange} />
+            <button onClick={handleUpload} className="upload-btn">Upload</button>
+          </div>
 
           <br/>
 
@@ -134,16 +162,14 @@ const Form: React.FC = () => {
           <br/>
 
           <label>Commentary: </label>  <br/>
-          {/* <input type="paragraph" className="TextInput" onChange={()=>setComment()} /> */}
-          <textarea className="TextInput" placeholder="image includes omelette and matcha :)" onChange={()=>setComment()}></textarea>
+
+          <textarea className="TextInput" placeholder="image includes omelette and matcha :)" onChange={(e)=>setComment(e.target.value)}></textarea>
 
 
-
+          <br/><br/>
+          <button type="submit" className="submit-btn">Submit</button>
           
 
-
-          
-          {/* <input type="text" id="fname" name="fname" autocomplete="off"/> */}
         </form>
     </div>
   );

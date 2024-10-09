@@ -33,7 +33,7 @@ const s3Client = new S3Client({
 
 // Configure Multer for file upload handling (in-memory storage)
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const multerUpload = multer({ storage });
 
 // Utility function to generate a unique key for each file
 const generateFileKey = (originalname) => {
@@ -43,7 +43,7 @@ const generateFileKey = (originalname) => {
 };
 
 // Upload route
-app.post("/upload", upload.single("image"), async (req, res) => {
+app.post("/upload", multerUpload.single("image"), async (req, res) => {
   try {
     const fileKey = generateFileKey(req.file.originalname);
 
@@ -88,6 +88,17 @@ app.get("/image/:key", async (req, res) => {
 app.post("/api/post", (req, res) => {
   const { group, restaurant, category, subcategory, item, image, id } =
     req.body;
+
+  //first check if the item with id already exists
+  Menus.findOne({ id: id }).then((result) => {
+    if (result) {
+      res
+        .status(400)
+        .json({ success: false, message: "Item with id already exists" });
+      return;
+    }
+  });
+
   Menus.create({ group, restaurant, category, subcategory, item, image, id })
     .then((result) => {
       console.log(result);
@@ -145,24 +156,14 @@ app.get("/api/getAllItems", (req, res) => {
   Menus.find()
     .then((result) => {
       // console.log(result.length)
-      res.status(200).json({success:true, items: result})
-    }
-  ).catch( err => {
-    res.status(400).json({success:false, message: 'Failed to get all items'})
-  })
-})
-
-app.get("/api/getByGroup/:group", (req,res) => {
-  const {group} = req.params;
-  Menus.findAll({group})
-  .then( result => {
-      // console.log(result.length)
-      res.status(200).json({success:true, items: result})
-    }
-  ).catch( err => {
-    res.status(400).json({success:false, message: 'Failed to get all items'})
-  })
-})
+      res.status(200).json({ success: true, items: result });
+    })
+    .catch((err) => {
+      res
+        .status(400)
+        .json({ success: false, message: "Failed to get all items" });
+    });
+});
 
 const mongoose = require("mongoose");
 

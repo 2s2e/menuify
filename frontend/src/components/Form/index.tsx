@@ -14,7 +14,9 @@ const Form: React.FC = () => {
   const [selectedDHG, setSelectedDHG] = useState<String>("")
   const [selectedDH, setSelectedDH] = useState<String>("")
   const [selectedMeal, setMeal] = useState<String>("")
-  const [uploadResult, setUploadResult] = useState<String>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadResult, setUploadResult] = useState(null);
+  const [imageKey, setImageKey] = useState("");
   const [menuItem, setMenuItem] = useState<String>("");
   const [comment, setComment] = useState<String>("")
   const [selectedDHItems,setSelectedDHItems] = useState<DiningHall[]>([])
@@ -116,7 +118,7 @@ const Form: React.FC = () => {
 
           <label>Photo: </label>  <br/>
           <input type="file" onChange={handleFileChange} />
-          {/* <button onClick={handleUpload}>Upload</button> */}
+          <button onClick={handleUpload}>Upload</button>
 
           <br/>
 

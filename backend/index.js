@@ -127,6 +127,18 @@ app.get("/api/getAllItems", (req,res) => {
   })
 })
 
+app.get("/api/getByGroup/:group", (req,res) => {
+  const {group} = req.params;
+  Menus.findAll({group})
+  .then( result => {
+      // console.log(result.length)
+      res.status(200).json({success:true, items: result})
+    }
+  ).catch( err => {
+    res.status(400).json({success:false, message: 'Failed to get all items'})
+  })
+})
+
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {

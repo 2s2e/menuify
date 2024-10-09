@@ -60,21 +60,18 @@ const Form: React.FC = () => {
 
     // const { group, restaurant, category, subcategory, item, image, id } =
     
-    const payload = { group: selectedDHG, restaurant: selectedDH, category: selectedMeal, item: menuItem }
-    console.log('selectedDHG: ', selectedDHG)
-    console.log('selectedDH: ', selectedDH) 
-    console.log('selectedMeal: ', selectedMeal)
-    console.log('menuItem: ', menuItem)
-    console.log('comment: ', comment)
-    console.log('imageKey: ', imageKey)
+    const payload = { group: selectedDHG, restaurant: selectedDH, category: selectedMeal, subcategory: "", item: menuItem }
+    // console.log('selectedDHG: ', selectedDHG)
+    // console.log('selectedDH: ', selectedDH) 
+    // console.log('selectedMeal: ', selectedMeal)
+    // console.log('menuItem: ', menuItem)
+    // console.log('comment: ', comment)
+    // console.log('imageKey: ', imageKey)
+    console.log(payload)
 
-    axios.post('http://localhost:3000/api/post', payload, {"Access-Control-Allow-Origin": '*'})
+    axios.post('http://localhost:3000/api/post', payload)
     .then( res => console.log(res.data.status)
     ).catch( err => console.log(err)  )
-
-    
-
-    
     
   };
 

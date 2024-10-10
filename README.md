@@ -12,3 +12,8 @@
 - Think about if we want to add number into db ie. 24 correspond to Cayon Vista or if we want to convert number to specific restaurants first before storing them to DB
 - be able to post by calling `/api/post` from frontend
 - figure out image with amazon s3
+
+- how to add a collection as a field to another collection (add Post schema as a field to Menus)
+- how to change mongdb uri so that it goes to Menuify database and the Menu collection
+- sync Menu schema
+- add search bar functionality

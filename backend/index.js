@@ -96,18 +96,26 @@ app.post("/api/post", (req, res) => {
         .status(400)
         .json({ success: false, message: "Item with id already exists" });
       return;
+    } else {
+      Menus.create({
+        group,
+        restaurant,
+        category,
+        subcategory,
+        item,
+        image,
+        id,
+      })
+        .then((result) => {
+          console.log(result);
+          res.status(200).json({ success: true, message: "Posted" });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(400).json({ sucess: false, message: "Failed to post" });
+        });
     }
   });
-
-  Menus.create({ group, restaurant, category, subcategory, item, image, id })
-    .then((result) => {
-      console.log(result);
-      res.status(200).json({ success: true, message: "Posted" });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json({ sucess: false, message: "Failed to post" });
-    });
 });
 
 app.put("/api/addImage/:id", (req, res) => {
@@ -167,14 +175,14 @@ app.get("/api/getAllItems", (req, res) => {
 
 const mongoose = require("mongoose");
 
-// mongoose.connect(process.env.MONGODB_URI).then(() => {
-//     console.log("Connected to MongoDB database!")
-// })
+mongoose.connect(process.env.MONGODB_URI).then(() => {
+  console.log("Connected to MongoDB database!");
+});
 
-mongoose
-  .connect("mongodb://127.0.0.1:27017/menus")
-  .then(() => console.log("Connected to MongoDB database!"))
-  .catch((err) => console.error("Failed to connect to MongoDB", err));
+// mongoose
+//   .connect("mongodb://127.0.0.1:27017/menus")
+//   .then(() => console.log("Connected to MongoDB database!"))
+//   .catch((err) => console.error("Failed to connect to MongoDB", err));
 
 // Start the server
 const port = process.env.PORT || 3000;

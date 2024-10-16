@@ -108,7 +108,7 @@ function MenuItemPage({ id }: { id: number }) {
 
       if (result) {
         const response2 = await fetch(
-          `http://localhost:3000/api/addImage/${menuItem.id}`,
+          `http://localhost:3000/api/addReview/${menuItem.id}`,
           {
             method: "PUT",
             headers: {

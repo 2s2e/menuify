@@ -86,49 +86,69 @@ app.get("/image/:key", async (req, res) => {
 });
 
 app.post("/api/post", (req, res) => {
-  const { group, restaurant, category, subcategory, item, image, id } =
+  const { group, restaurant, category, subcategory, item, reviews, id } =
     req.body;
 
   //first check if the item with id already exists
-  Menus.findOne({ id: id }).then((result) => {
-    if (result) {
-      res
-        .status(400)
-        .json({ success: false, message: "Item with id already exists" });
-      return;
-    } else {
-      Menus.create({
-        group,
-        restaurant,
-        category,
-        subcategory,
-        item,
-        image,
-        id,
-      })
-        .then((result) => {
-          console.log(result);
-          res.status(200).json({ success: true, message: "Posted" });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(400).json({ sucess: false, message: "Failed to post" });
-        });
-    }
+//   Menus.findOne({ id: id }).then((result) => {
+//     if (result) {
+//       res
+//         .status(400)
+//         .json({ success: false, message: "Item with id already exists" });
+//       return;
+//     } else {
+//       Menus.create({
+//         group,
+//         restaurant,
+//         category,
+//         subcategory,
+//         item,
+//         image,
+//         id,
+//       })
+//         .then((result) => {
+//           console.log("ressss in /api/post: ", result);
+//           res.status(200).json({ success: true, message: "Posted" });
+//         })
+//         .catch((err) => {
+//           console.log(err);
+//           res.status(400).json({ sucess: false, message: "Failed to post" });
+//         });
+//     }
+//   });
+Menus.create({
+  group,
+  restaurant,
+  category,
+  subcategory,
+  item,
+  reviews,
+  id,
+})
+  .then((result) => {
+    console.log("ressss in /api/post: ", result);
+    res.status(200).json({ success: true, message: "Posted" });
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(400).json({ sucess: false, message: "Failed to post" });
   });
+
 });
 
-app.put("/api/addImage/:id", (req, res) => {
+
+app.put("/api/addReview/:id", (req, res) => {
   const { id } = req.params;
   const { review } = req.body;
-  Menus.findOneAndUpdate({ id: id }, { $push: { reviews: review } })
+  // console.log("in /api/addReview in index.js: ", id, review , req.body)
+  Menus.findOneAndUpdate({ id }, { $push: { reviews: req.body } })
     .then((result) => {
       console.log(result);
-      res.status(200).json({ success: true, message: "Image added" });
+      res.status(200).json({ success: true, result: result });
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).json({ success: false, message: "Failed to add image" });
+      res.status(400).json({ success: false, error: error });
     });
 });
 
@@ -146,19 +166,19 @@ app.get("/api/getItem/:name", (req, res) => {
     });
 });
 
-app.get("/api/getItem/:id", (req, res) => {
-  const { id } = req.params;
-  console.log(id);
-  Menus.findOne({ id: id })
-    .then((result) => {
-      console.log(result);
-      res.status(200).json({ success: true, item: result });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json({ sucess: false, message: "Failed to fetch item" });
-    });
-});
+// app.get("/api/getItem/:id", (req, res) => {
+//   const { id } = req.params;
+//   console.log(id);
+//   Menus.findOne({ id: id })
+//     .then((result) => {
+//       console.log(result);
+//       res.status(200).json({ success: true, item: result });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(400).json({ sucess: false, message: "Failed to fetch item" });
+//     });
+// });
 
 app.get("/api/getAllItems", (req, res) => {
   Menus.find()

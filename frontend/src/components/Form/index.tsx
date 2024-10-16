@@ -62,7 +62,12 @@ const Form: React.FC = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault(); // Prevent page reload
 
-    // const { group, restaurant, category, subcategory, item, image, id } =
+    const review = 
+      {
+        image: imageKey,
+        comments: comment
+      }
+    ;
 
     const payload = {
       group: selectedDHG,
@@ -70,22 +75,44 @@ const Form: React.FC = () => {
       category: selectedMeal,
       subcategory: "",
       item: menuItem,
+      reviews: review,
       id: id,
     };
-    // console.log('selectedDHG: ', selectedDHG)
-    // console.log('selectedDH: ', selectedDH)
-    // console.log('selectedMeal: ', selectedMeal)
-    // console.log('menuItem: ', menuItem)
-    // console.log('comment: ', comment)
-    // console.log('imageKey: ', imageKey)
-    console.log(payload);
 
-    axios
-      .post("http://localhost:3000/api/post", payload)
-      .then((res) => console.log(res.data.status))
-      .catch((err) => console.log(err));
+    console.log("payload in form: ", payload);
 
-    handleUpload();
+    axios.get(`http://localhost:3000/api/getItem/${menuItem}`)
+    .then((res) => {
+      console.log("res.data.item from /api/getItem in form: ", res.data.item)
+
+      if( res.data.item !== null ){
+
+        console.log("item alr exist")
+
+        axios.put(`http://localhost:3000/api/addReview/${id}`, review)
+        .then((res) => {
+          console.log("res for addReview in handleSubmit in form: ", res)
+
+        })
+        .catch((err) => console.log("err 1 in form: ", err))
+
+
+
+      }else{
+        console.log("item thread doesnt exist yet")
+        axios.post("http://localhost:3000/api/post", payload)
+        .then((res) => {
+          console.log("res for post new item in handleSubmit in form: ", res)
+          console.log(res.data.status)
+        })
+        .catch((err) => console.log("err 2 in form: ", err))
+      }
+
+    }).catch(
+      (err) => console.log("err 3 in form: ", err)
+    )
+
+    
   };
 
   function generateHash(str: string): number {
@@ -107,12 +134,7 @@ const Form: React.FC = () => {
   // Handle image upload
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select a file first!");
-      return;
-    }
-
-    if (!comment) {
-      alert("Please enter a comment!");
+      alert("Please select a file!");
       return;
     }
 
@@ -128,27 +150,28 @@ const Form: React.FC = () => {
       const result = await response.json();
       console.log(result);
       setUploadResult(result.fileKey);
+      console.log("result.fileKey: ", result.fileKey)
       setImageKey(result.fileKey); // Extract the key from the URL
 
-      if (result) {
-        const response2 = await fetch(
-          `http://localhost:3000/api/addImage/${id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              review: {
-                image: result.fileKey,
-                commentary: comment,
-              },
-            }),
-          }
-        );
-        const result2 = await response2.json();
-        console.log(result2);
-      }
+    //   if (result) {
+    //     const response2 = await fetch(
+    //       `http://localhost:3000/api/addReview/${id}`,
+    //       {
+    //         method: "PUT",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify({
+    //           review: {
+    //             image: result.fileKey,
+    //             commentary: comment,
+    //           },
+    //         }),
+    //       }
+    //     );
+    //     const result2 = await response2.json();
+    //     console.log(result2);
+      // }
     } catch (error) {
       console.error("Error uploading image:", error);
     }
@@ -186,9 +209,9 @@ const Form: React.FC = () => {
         <label>Photo: </label> <br />
         <div>
           <input type="file" onChange={handleFileChange} />
-          {/* <button onClick={handleUpload} className="upload-btn">
+          <button onClick={handleUpload} className="upload-btn">
             Upload
-          </button> */}
+          </button> 
         </div>
         <br />
         {uploadResult && (

@@ -11,6 +11,7 @@ import {
 import Form from "./components/Form";
 import MenuItemPage from "./components/MenuItemPage";
 import Home from "./pages/home";
+import ItemList from "./components/ItemList";
 
 // Dummy data
 const data = [
@@ -74,7 +75,6 @@ const data = [
 function DiningHallMenu() {
   return (
     <div className="container">
-
       <Form />
     </div>
 
@@ -111,7 +111,8 @@ function App() {
       <Routes>
         <Route path="/" element={<DiningHallMenu />} />
         <Route path="/menu-item/:id" element={<MenuItemPageWrapper />} />
-        <Route path="/reviews" element={<Home />} /> 
+        <Route path="/reviews" element={<Home />} />
+        <Route path="/items" element={<ItemList />} />
       </Routes>
     </Router>
   );

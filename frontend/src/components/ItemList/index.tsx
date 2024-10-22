@@ -33,19 +33,51 @@ const ItemList = () => {
       setItems(newItems);
       console.log("newItems: ", newItems);
     });
-  });
+  }, []);
 
   return (
     <div>
       <h1>Item List</h1>
 
-      <ul>
+      <ul style={{ listStyleType: "none", padding: 0 }}>
         {items.map((item) => (
-          <li key={item.id}>
-            <p>{item.group}</p>
-            <p>{item.restaurant}</p>
-            <p>{item.category}</p>
-            <p>{item.item}</p>
+          <li
+            key={item.id}
+            style={{
+              marginBottom: "1rem",
+              padding: "1rem",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+            }}
+          >
+            <p>
+              <strong>Group:</strong> {item.group}
+            </p>
+            <p>
+              <strong>Restaurant:</strong> {item.restaurant}
+            </p>
+            <p>
+              <strong>Category:</strong> {item.category}
+            </p>
+            <p>
+              <strong>Item:</strong> {item.item}
+            </p>
+
+            <button
+              onClick={() => {
+                window.location.href = `/item/${item.id}`;
+              }}
+              style={{
+                padding: "0.5rem 1rem",
+                backgroundColor: "#007bff",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              Reviews
+            </button>
           </li>
         ))}
       </ul>

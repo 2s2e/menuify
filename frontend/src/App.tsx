@@ -12,6 +12,7 @@ import Form from "./components/Form";
 import MenuItemPage from "./components/MenuItemPage";
 import Home from "./pages/home";
 import ItemList from "./components/ItemList";
+import ReviewBox from "./components/ReviewBox";
 
 // Dummy data
 const data = [
@@ -113,6 +114,7 @@ function App() {
         <Route path="/menu-item/:id" element={<MenuItemPageWrapper />} />
         <Route path="/reviews" element={<Home />} />
         <Route path="/items" element={<ItemList />} />
+        <Route path="/item/:id" element={<ReviewBoxWrapper />} />
       </Routes>
     </Router>
   );
@@ -122,6 +124,11 @@ function App() {
 function MenuItemPageWrapper() {
   const { id } = useParams();
   return <MenuItemPage id={Number(id)} />;
+}
+
+function ReviewBoxWrapper() {
+  const { id } = useParams();
+  return <ReviewBox id={Number(id)} />;
 }
 
 export default App;

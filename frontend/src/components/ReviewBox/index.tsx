@@ -35,11 +35,9 @@ const ReviewBox = ({ id }: { id: number }) => {
       {/* import the scrollable component */}
 
       <div className="scrollableReviews">
-        {reviews
-          .map((b) => b.comments)
-          .map((a) => (
-            <Review comment={a} />
-          ))}
+        {reviews.map((a) => (
+          <Review comment={a.comments} image={a.image} />
+        ))}
       </div>
     </div>
   );

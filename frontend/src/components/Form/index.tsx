@@ -6,10 +6,9 @@ import React, {
   useRef,
 } from "react";
 import Dropdown from "../Dropdown";
-import diningHallGroupMapping from "../../data/diningHallGroupMapping.json";
+import { diningHallGroup, meal, diningHallGroupMapping } from '../../metadata/data';
 import "./index.less";
 import axios from "axios";
-import crypto from "crypto";
 
 interface DiningHall {
   id: string;
@@ -27,29 +26,7 @@ const Form: React.FC = () => {
   const [comment, setComment] = useState<string>("");
   const [selectedDHItems, setSelectedDHItems] = useState<DiningHall[]>([]);
   const [id, setId] = useState<number>(0);
-  const prevSelectedDHRef = useRef<DiningHall[]>([]);
 
-  const diningHallGroup = [
-    { id: "64", name: "64 Degree" },
-    { id: "18", name: "Ventanas" },
-    { id: "24", name: "Canyon Vista" },
-    { id: "15", name: "Club Med" },
-    { id: "11", name: "Foodworx" },
-    { id: "05", name: "Oceanview" },
-    { id: "01", name: "Pines" },
-    { id: "37", name: "Sixth College" },
-    { id: "27", name: "The Bistro" },
-    { id: "21", name: "Northside Deli at Seventh Market" },
-    { id: "32", name: "Roots" },
-  ];
-
-  const meal = [
-    { id: "1", name: "Breakfast" },
-    { id: "2", name: "Brunch" },
-    { id: "3", name: "Lunch" },
-    { id: "4", name: "Dinner" },
-    { id: "5", name: "Dessert" },
-  ];
 
   useEffect(() => {
     if (selectedDHG) {
@@ -102,6 +79,19 @@ const Form: React.FC = () => {
                 res
               );
               console.log(res.data.status);
+
+              setSelectedDHG("")
+              setSelectedDH("")
+              setMeal("")
+              setFile(null)
+              setUploadResult(null)
+              setImageKey("")
+              setImageKey("")
+              setMenuItem("")
+              setComment("")
+              setSelectedDHItems([])
+              setId(0)
+    
             })
             .catch((err) => console.log("err 2 in form: ", err));
         }

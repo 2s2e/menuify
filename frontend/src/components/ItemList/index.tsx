@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { diningHallGroup, meal, diningHallGroupMapping } from '../../metadata/data';
+
 
 interface Review {
   comments: string;
@@ -12,6 +14,7 @@ interface Item {
   restaurant: string;
   item: string;
 }
+
 
 const ItemList = () => {
   //list of items in the database
@@ -36,28 +39,32 @@ const ItemList = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ padding: "5vh 5vw"}}>
       <h1>Item List</h1>
 
-      <ul style={{ listStyleType: "none", padding: 0 }}>
+      <div style={{ listStyleType: "none", padding: 0, display: "flex", flexWrap: "wrap", gap: "1rem"}}>
         {items.map((item) => (
-          <li
+          <div
             key={item.id}
             style={{
               marginBottom: "1rem",
               padding: "1rem",
               border: "1px solid #ccc",
               borderRadius: "8px",
+              width: "20vw",
+              height: "35vh",
+              backgroundColor: "#b5e2ff" ,
+              position: "relative"
             }}
           >
             <p>
-              <strong>Group:</strong> {item.group}
+              <strong>Dining Hall Group:</strong> {diningHallGroup.find(hall => hall.id === item.group)?.name}
             </p>
             <p>
-              <strong>Restaurant:</strong> {item.restaurant}
+              <strong>Restaurant:</strong> {diningHallGroupMapping[item.group as keyof typeof diningHallGroupMapping].find(i => i.id === item.restaurant)?.name}
             </p>
             <p>
-              <strong>Category:</strong> {item.category}
+              <strong>Category:</strong> {meal.find( m => m.id === item.category)?.name}
             </p>
             <p>
               <strong>Item:</strong> {item.item}
@@ -74,13 +81,15 @@ const ItemList = () => {
                 border: "none",
                 borderRadius: "4px",
                 cursor: "pointer",
+                position: "absolute",
+                bottom: "10px"
               }}
             >
-              Reviews
+              View Reviews
             </button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

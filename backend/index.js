@@ -191,6 +191,40 @@ app.get("/api/getAllItems", (req, res) => {
     });
 });
 
+app.get("/api/getItemsByGroup/:group", (req, res) => {
+  const { group } = req.params;
+  console.log(group);
+
+  Menus.find( {group})
+  .then( (result) => {
+    // console.log(result)
+    res.status(200).json({ success: true, itemsByGroup: result });
+  })
+  .catch((err) => {
+    res
+      .status(400)
+      .json({ success: false, message: `Failed to get items in the group ${group}` });
+  });
+
+});
+
+app.get("/api/getItemsByCategory/:category", (req, res) => {
+  const { category } = req.params;
+  console.log(category);
+
+  Menus.find( {category})
+  .then( (result) => {
+    // console.log(result)
+    res.status(200).json({ success: true, itemsByCategory: result });
+  })
+  .catch((err) => {
+    res
+      .status(400)
+      .json({ success: false, message: `Failed to get items in the category ${category}` });
+  });
+
+});
+
 const mongoose = require("mongoose");
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
